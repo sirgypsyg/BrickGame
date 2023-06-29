@@ -14,7 +14,7 @@ public class GameCanvas extends Canvas {
     private GraphicsContext graphicsContext;
     private Paddle paddle;
     private Ball ball;
-    private List<Brick> bricks = new ArrayList<>();
+    private final List<Brick> bricks = new ArrayList<>();
     private int temp  = 0;
     private Ball.CrushType checkCollision(){
         //mozna zoptymalizowac na pewno;
@@ -57,7 +57,7 @@ public class GameCanvas extends Canvas {
         Color[] colors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.PURPLE};
         return colors[(rowIndex - 2) % colors.length];
     }
-    private AnimationTimer animationTimer = new AnimationTimer() {
+    private final AnimationTimer animationTimer = new AnimationTimer() {
         private long lastUpdate;
         @Override
         public void handle(long now) {
@@ -99,6 +99,7 @@ public class GameCanvas extends Canvas {
 
     public GameCanvas() {
         super(640, 700);
+        setFocusTraversable(true);
 
         this.setOnMouseMoved(mouseEvent -> {
             paddle.setPosition(mouseEvent.getX());
@@ -107,6 +108,16 @@ public class GameCanvas extends Canvas {
 //            else
 //                ball.updatePosition();
             draw();
+        });
+
+        this.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.SPACE){
+                System.out.println("Test");
+                gameRunning = !gameRunning;
+                if (gameRunning){
+                    animationTimer.start();
+                }else animationTimer.stop();
+            }
         });
 
 
@@ -132,24 +143,20 @@ public class GameCanvas extends Canvas {
         }
     }
     private boolean shouldBallBounceHorizontally(){
-        if (ball.x <= 0 || ball.x + ball.getWidth() >= GraphicsItem.canvasWidth)return true;//
-        else return false;
+        return ball.x <= 0 || ball.x + ball.getWidth() >= GraphicsItem.canvasWidth;//
     }
     private boolean  shouldBallBounceVertically(){
-        if (ball.y <= 0)return true;// || ball.x + 100 <= GraphicsItem.canvasWidth
-        else return false;
+        return ball.y <= 0;// || ball.x + 100 <= GraphicsItem.canvasWidth
     }
     private boolean  shouldBallBounceFromPaddle(){
-        if (ball.y + ball.height >= paddle.y
-                && (ball.x >= paddle.x && ball.x <= paddle.x + paddle.width))return true;
-        else return false;
+        return ball.y + ball.height >= paddle.y
+                && (ball.x >= paddle.x && ball.x <= paddle.x + paddle.width);
     }
     private boolean isBallJammed(){
         if (ball.x < 0 && ball.moveVector.getX() < 0) return true; //horizon L
         if (ball.x + ball.getWidth() > GraphicsItem.canvasWidth && ball.moveVector.getX() > 0) return true;//horizon R
         if (ball.y < 0 && ball.moveVector.getY() < 0) return true;// Vert
-        if (ball.y + ball.height > paddle.y
-                && (ball.x > paddle.x && ball.x < paddle.x + paddle.width) && ball.moveVector.getY() > 0)return true;
-        else return false;
+        return ball.y + ball.height > paddle.y
+                && (ball.x > paddle.x && ball.x < paddle.x + paddle.width) && ball.moveVector.getY() > 0;
     }
 }
