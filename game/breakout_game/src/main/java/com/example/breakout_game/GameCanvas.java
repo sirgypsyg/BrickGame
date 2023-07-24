@@ -13,6 +13,7 @@ import java.util.List;
 public class GameCanvas extends Canvas {
     private GraphicsContext graphicsContext;
     private Paddle paddle;
+    private int score = 0;
     private Ball ball;
     private final List<Brick> bricks = new ArrayList<>();
     private int temp  = 0;
@@ -25,6 +26,7 @@ public class GameCanvas extends Canvas {
                     || (ball.getRightUpperCorner().getX() >=  bricks.get(i).getLeftUpperCorner().getX() && ball.getRightUpperCorner().getX() <=  bricks.get(i).getRightUpperCorner().getX())) {
                 if (ball.getLeftUpperCorner().getY() <=  bricks.get(i).getLeftUpperCorner().getY() && ball.getRightLowerCorner().getY() >=  bricks.get(i).getLeftLowerCorner().getY()) {
                     bricks.remove(i);
+                    score+=10;
                     return Ball.CrushType.HorizontalCrush;
                 }
             }
@@ -34,6 +36,7 @@ public class GameCanvas extends Canvas {
                     || (ball.getRightLowerCorner().getY() >=  bricks.get(i).getLeftUpperCorner().getY() && ball.getRightLowerCorner().getY() <=  bricks.get(i).getLeftLowerCorner().getY())) {
                 if (ball.getLeftUpperCorner().getX() <=  bricks.get(i).getRightUpperCorner().getX() && ball.getRightUpperCorner().getX() >=  bricks.get(i).getLeftUpperCorner().getX()) {
                     bricks.remove(i);
+                    score+=10;
                     return Ball.CrushType.VerticalCrush;
                 }
             }
@@ -46,12 +49,14 @@ public class GameCanvas extends Canvas {
     public void loadLevel() {
         Brick.setGrid(20, 10);
 
+
         for (int i = 0; i < Brick.getGridCols(); ++i) {
             for (int j = 2; j < 8; ++j) {
                 Color color = getColorForRowIndex(j);
                 bricks.add(new Brick(i, j, color));
             }
         }
+
     }
     private Color getColorForRowIndex(int rowIndex) {
         Color[] colors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.PURPLE};
@@ -138,9 +143,13 @@ public class GameCanvas extends Canvas {
         graphicsContext.fillRect(0, 0, getWidth(), getHeight());
         paddle.draw(graphicsContext);
         ball.draw(graphicsContext);
+
         for (var brick : bricks){
             brick.draw(graphicsContext);
         }
+
+        graphicsContext.setFill(Color.WHITE);
+        graphicsContext.fillText("Score: " + score , 5, getHeight() - 10);
     }
     private boolean shouldBallBounceHorizontally(){
         return ball.x <= 0 || ball.x + ball.getWidth() >= GraphicsItem.canvasWidth;//
