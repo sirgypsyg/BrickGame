@@ -6,3 +6,4 @@ Brickgame is a game where player control a paddle to bounce a ball and break bri
 - **Pause game**: Press space to pause the game.
 - **Different angles**: Ball bounces differently from the paddle when hit from different angle.
 - **Score**: Displays current score.
+<img width="528" alt="Screenshot 2023-07-24 at 20 19 46" src="https://github.com/sirgypsyg/BrickGame/assets/107400417/d2e1c329-29ad-4870-b62f-9b27c31bd3b2">
